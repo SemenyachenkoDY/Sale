@@ -2,24 +2,6 @@
 
 **Цель работы.** Изучение основных принципов работы с ETL-инструментами на примере Pentaho Data Integration (PDI), настройка среды, создание конвейера обработки данных (фильтрация, очистка, замена значений) и выгрузка результатов в базу данных MySQL.
 
-# Ход работы
-
-## Подготовка окружения
-
-**Шаг 1. Установка Java и зависимостей**
-<img width="961" height="1028" alt="image" src="https://github.com/user-attachments/assets/6cd9cee1-9a0e-4772-aa40-628353266a5f" />
-
-**Шаг 2. Установка драйвера MySQL**
-<img width="871" height="809" alt="image" src="https://github.com/user-attachments/assets/9ab4f2a5-23da-4243-8e04-f456ffb3b086" />
-
-<img width="954" height="1032" alt="image" src="https://github.com/user-attachments/assets/1a0698de-fd82-4f0a-91f8-cc6556ab0be3" />
-
-<img width="960" height="1003" alt="image" src="https://github.com/user-attachments/assets/3c100ba2-f473-441b-b15a-699dcc440ed9" />
-
-**Шаг 3. Запуск Pentaho Spoon**
-<img width="870" height="625" alt="image" src="https://github.com/user-attachments/assets/e378e801-b0f9-46ef-937a-ad13162b7cd0" />
-
-
 # Задание на лабораторную работу
 ### Общая задача
 1.  Выбрать вариант задания из таблицы ниже.
@@ -30,42 +12,40 @@
     *   **Filter Rows / Value Mapper / String Operations.** Очистка данных, фильтрация битых записей, замена значений.
     *   **Table Output.** Загрузка очищенных данных в таблицу MySQL в базе `mgpu_ico_etl_XX`.
 5.  Проверить результат SQL-запросом через phpMyAdmin.
+
 ### Варианты заданий
-| 18 | Цифровая реклама: обработка данных кампаний. | [Digital Ads Dataset]()
+| 18 | Цифровая реклама: обработка данных кампаний. | [Digital Ads Dataset](lab_01/DigitalAd_dataset.csv)
 
 # Выполнение лаборатоной работы
 
 ## Созданный конвейер в Spoon (общий вид)
-<img width="1917" height="1027" alt="image" src="https://github.com/user-attachments/assets/93d83bca-3106-4093-a0bd-8fd50bc6451d" />
 
 ## Настройки ключевых шагов (Input, Filter, Output)
 
 ### Настройка блока Input
-<img width="1913" height="1018" alt="image" src="https://github.com/user-attachments/assets/f975a84a-f598-4c91-a820-1596a8a4ccea" />
+<img width="1232" height="736" alt="image" src="https://github.com/user-attachments/assets/dd827724-f2c6-49ab-b767-d5875ce6dccf" />
+
+### Настройка блока SelectRows
+<img width="1566" height="809" alt="image" src="https://github.com/user-attachments/assets/52ddea72-51aa-4b16-a244-5e22f0e943ac" />
 
 ### Настройка блока Filter
-<img width="1082" height="707" alt="image" src="https://github.com/user-attachments/assets/03cab278-3393-4ab8-8031-8017a175b51e" />
 
 ###  Настройка блока Calculator
-<img width="1919" height="1018" alt="image" src="https://github.com/user-attachments/assets/77b1b287-16f7-4b3d-9467-00bacf655f89" />
 
 ### Настройка блока Output
-<img width="937" height="711" alt="image" src="https://github.com/user-attachments/assets/d99f95d6-9a0e-4183-801b-6d7891862576" />
 
 
 ## SQL-запросы, использованные для проверки загрузки данных, и скриншот результата SELECT из phpMyAdmin
 
 ### Для проверки наличия записей использовался такой скрипт: SELECT * FROM `stock_prices` LIMIT 100;
 
-<img width="1919" height="963" alt="image" src="https://github.com/user-attachments/assets/1b500101-22c9-47da-8c1e-df10e4d651da" />
 
-
+ jTG3yrkc
 ### Для проверки количества записей использовался такой запрос: SELECT COUNT(*) FROM stock_prices;
-<img width="1919" height="907" alt="image" src="https://github.com/user-attachments/assets/7e71a74a-eeef-4f90-aedc-f01b8ca5230f" />
 
 
 ## Файлы:
-[Исходный CSV](https://disk.yandex.ru/d/iKY-8wgjCtOIeg)
+[Исходный CSV](lab_01/DigitalAd_dataset.csv)
 
-[Файл трансформации](/Lab_01.ktr)
+[Файл трансформации]()
 
