@@ -174,7 +174,7 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 
 # Файлы
 
-[Файл Job]()
+[Файл Job](/Files/Job%20CSV.kjb)
 
 [Файл Transformations orders](/Files/lab_2_1_csv_orders.ktr)
 
