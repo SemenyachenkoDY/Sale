@@ -40,7 +40,7 @@
 ### Для проверки наличия записей использовался такой скрипт: SELECT * FROM `stock_prices` LIMIT 100;
 
 
- jTG3yrkc
+ jTG3yrkc digital_ad_customers
 ### Для проверки количества записей использовался такой запрос: SELECT COUNT(*) FROM stock_prices;
 
 
