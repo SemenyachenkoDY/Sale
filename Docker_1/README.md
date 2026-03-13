@@ -10,7 +10,6 @@
 <img width="747" height="528" alt="image" src="https://github.com/user-attachments/assets/3b3ae362-4853-4ff6-b15c-2ea6c9862de9" />
 
 Просмотр скачанных образов
-
 <img width="837" height="552" alt="image" src="https://github.com/user-attachments/assets/5a0a98c6-bf90-427b-b126-bfc91cbffb27" />
 
 Просмотр запущенных контейнеров
