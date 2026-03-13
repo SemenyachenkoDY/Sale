@@ -27,9 +27,9 @@
 
 Запуск контейнера influxdb	
 **Создаём исполняемый файл с помощью nano influx.sh.**
-<img width="1053" height="523" alt="image" src="" />
-
+<img width="1053" height="523" alt="image" src="Docker_1/Снимок%20экрана%202026-03-13%20184659.png" />
 Проверка influxdb	на порту 8086 
+
 Запустите скрипт и выберите опцию 1. Команда, которую он выполнит: docker run -d -p 8086:8086 --name influxdb influxdb:latest
 
 
