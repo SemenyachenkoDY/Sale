@@ -1,0 +1,62 @@
+<mxfile version="21.1.2">
+  <diagram id="etl-architecture" name="ETL Architecture">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Layers -->
+        <mxCell id="layer_source" value="Source Layer" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="200" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_storage" value="Storage Layer" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="320" y="80" width="200" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_business" value="Business Layer" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="600" y="80" width="200" height="360" as="geometry" />
+        </mxCell>
+        
+        <!-- Source Layer Items -->
+        <mxCell id="posgres_db" value="PostgreSQL&#xa;retail_stores&#xa;(1,000,000 rows)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="layer_source">
+          <mxGeometry x="40" y="50" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="csv_file" value="main_warehouse.csv&#xa;(100,000 rows)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="layer_source">
+          <mxGeometry x="40" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="excel_file" value="deliveries.xlsx&#xa;(100,000 rows)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="layer_source">
+          <mxGeometry x="40" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Storage Layer Items -->
+        <mxCell id="staging_area" value="Staging Area&#xa;(Pentaho DI Filter/Join)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="layer_storage">
+          <mxGeometry x="40" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="mysql_db" value="MySQL Target&#xa;inventory_analysis&#xa;(~100,000 rows)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="layer_storage">
+          <mxGeometry x="40" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Business Layer Items -->
+        <mxCell id="view_analytics" value="Data Mart View&#xa;(view_analytics_report)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="layer_business">
+          <mxGeometry x="40" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections -->
+        <mxCell id="arrow1" edge="1" parent="1" source="posgres_db" target="staging_area">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" edge="1" parent="1" source="csv_file" target="staging_area">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" edge="1" parent="1" source="excel_file" target="staging_area">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" edge="1" parent="1" source="staging_area" target="mysql_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" edge="1" parent="1" source="mysql_db" target="view_analytics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
