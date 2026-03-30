@@ -101,6 +101,11 @@
     <connection>PostgreSQL_Source</connection>
     <sql>SELECT call_id, operator_id, call_date, duration_sec FROM call_logs</sql>
     <limit>0</limit>
+    <GUI>
+      <xloc>100</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
@@ -109,6 +114,15 @@
     <filename>${Internal.Entry.Current.Directory}/call_topics.csv</filename>
     <delimiter>,</delimiter>
     <header>Y</header>
+    <fields>
+      <field><name>call_id</name><type>Integer</type></field>
+      <field><name>topic_name</name><type>String</type></field>
+    </fields>
+    <GUI>
+      <xloc>100</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
@@ -120,6 +134,11 @@
       <field><name>operator_name</name><type>String</type></field>
       <field><name>kpi_score</name><type>Number</type></field>
     </fields>
+    <GUI>
+      <xloc>300</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
@@ -131,6 +150,11 @@
       <key><name>call_id</name><field>call_id</field></key>
       <value><name>topic_name</name><rename>topic_name</rename></value>
     </lookup>
+    <GUI>
+      <xloc>300</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
@@ -143,6 +167,11 @@
       <value><name>operator_name</name><rename>operator_name</rename></value>
       <value><name>kpi_score</name><rename>kpi_score</rename></value>
     </lookup>
+    <GUI>
+      <xloc>500</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
@@ -155,16 +184,26 @@
       <rightvalue/>
       <value><name>constant</name><type>Integer</type><text>540</text></value>
     </condition>
+    <GUI>
+      <xloc>700</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
     <name>Table Output (MySQL)</name>
     <type>TableOutput</type>
     <connection>MySQL_Target</connection>
-    <table/>
+    <table>call_center_analytics</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
+    <GUI>
+      <xloc>900</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
 </transformation>
