@@ -1,8 +1,5 @@
---==============================================================
--- 1. SOURCE LAYER (POSTGRESQL - LOCALHOST)
--- Выполните этот скрипт в pgAdmin4
---==============================================================
 
+--PgADMIN4
 -- Создание исходной таблицы розничных магазинов
 CREATE TABLE IF NOT EXISTS retail_stores (
     id SERIAL PRIMARY KEY,
@@ -12,9 +9,6 @@ CREATE TABLE IF NOT EXISTS retail_stores (
     date_recorded DATE,
     category VARCHAR(50)
 );
-
--- Очистка перед генерацией (если таблица уже существовала)
-TRUNCATE TABLE retail_stores RESTART IDENTITY;
 
 -- Генерация 1 000 000 строк синтетических данных
 INSERT INTO retail_stores (store_id, product_id, store_balance, date_recorded, category)
@@ -32,12 +26,7 @@ SELECT
     END
 FROM generate_series(1, 1000000);
 
-
---==============================================================
--- 2. STORAGE LAYER (MYSQL - TARGET)
--- Выполните этот скрипт в DBeaver / phpMyAdmin
---==============================================================
-
+--PHP уже все сделано
 -- Создание целевой таблицы для хранения обогащенных данных
 CREATE TABLE IF NOT EXISTS inventory_analysis (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -52,12 +41,6 @@ CREATE TABLE IF NOT EXISTS inventory_analysis (
     total_stock INT,           
     discrepancy INT
 );
-
-
---==============================================================
--- 3. BUSINESS LAYER (MYSQL - TARGET)
--- Витрина данных
---==============================================================
 
 -- Создание аналитического представления (View)
 CREATE OR REPLACE VIEW view_analytics_report AS
