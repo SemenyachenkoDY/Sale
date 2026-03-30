@@ -1,8 +1,8 @@
-# Отчет по лабораторной работе №3
+<img width="877" height="106" alt="image" src="https://github.com/user-attachments/assets/41d4815a-ff3e-47e8-a3c6-2178bd54e76d" /># Отчет по лабораторной работе №3
 
 ## Развертывание приложения в Kubernetes
 
-**Студент:** Семеняченко Данил
+**Студент:** Харламова Анна
 **Группа:** АДЭУ-221
 **Вариант:** 18  
 **Задача:** Развернуть аналитическую БД InfluxDB и интерфейс Chronograf для визуализации метрик в кластере Kubernetes.
@@ -103,17 +103,14 @@ spec:
               name: chronograf
 ```
 
-**4. Сетевые интерфейсы (`services.yaml`)**
-
-- `influxdb-service` (ClusterIP): Обеспечивает внутренний доступ к БД для Chronograf.
-- `chronograf-service` (NodePort: 30888): Открывает доступ к веб-интерфейсу Chronograf снаружи кластера через порт 30888.
-
 #### 2.3. Проверка взаимодействия
 
 Для проверки работоспособности используются команды:
 
 - `kubectl get pods` — для подтверждения статуса **Running**.
+
 - `kubectl get services` — для проверки корректности проброса портов.
+<img width="877" height="106" alt="image" src="https://github.com/user-attachments/assets/63f59494-e097-4a6f-a574-4c10e2426d5e" />
 
 ---
 
