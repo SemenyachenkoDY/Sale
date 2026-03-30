@@ -1,8 +1,5 @@
---==============================================================
--- 1. SOURCE LAYER (POSTGRESQL - LOCALHOST)
--- Выполните этот скрипт в pgAdmin4
---==============================================================
 
+--PgADMIN4
 -- Создание исходной таблицы розничных магазинов
 CREATE TABLE IF NOT EXISTS retail_stores (
     id SERIAL PRIMARY KEY,
@@ -12,9 +9,6 @@ CREATE TABLE IF NOT EXISTS retail_stores (
     date_recorded DATE,
     category VARCHAR(50)
 );
-
--- Очистка перед генерацией (если таблица уже существовала)
-TRUNCATE TABLE retail_stores RESTART IDENTITY;
 
 -- Генерация 1 000 000 строк синтетических данных
 INSERT INTO retail_stores (store_id, product_id, store_balance, date_recorded, category)
@@ -32,38 +26,30 @@ SELECT
     END
 FROM generate_series(1, 1000000);
 
-
---==============================================================
--- 2. STORAGE LAYER (MYSQL - TARGET)
--- Выполните этот скрипт в DBeaver / phpMyAdmin
---==============================================================
-
+--PHP уже все сделано
 -- Создание целевой таблицы для хранения обогащенных данных
 CREATE TABLE IF NOT EXISTS inventory_analysis (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
+    table_id INT,                
+    screen_id INT,                
     store_id INT,
-    category VARCHAR(50),
+    product_id INT,
     store_balance INT,
-    warehouse_balance INT,
+    category VARCHAR(50),
+    warehouse_base INT,           
     delivery_qty INT,
+    total_stock INT,           
     discrepancy INT
 );
-
-
---==============================================================
--- 3. BUSINESS LAYER (MYSQL - TARGET)
--- Витрина данных
---==============================================================
 
 -- Создание аналитического представления (View)
 CREATE OR REPLACE VIEW view_analytics_report AS
 SELECT 
     category,
-    SUM(store_balance) as total_store_balance,
-    SUM(warehouse_balance) as total_warehouse_balance,
-    SUM(delivery_qty) as total_delivered,
-    SUM(discrepancy) as total_discrepancy,
-    COUNT(*) as records_analyzed_count
+    SUM(store_balance) AS total_store_balance,
+    SUM(warehouse_base) AS total_warehouse_balance,
+    SUM(delivery_qty) AS total_delivered,
+    SUM(discrepancy) AS total_discrepancy,
+    COUNT(*) AS records_analyzed_count
 FROM inventory_analysis
 GROUP BY category;
