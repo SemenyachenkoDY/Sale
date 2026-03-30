@@ -15,7 +15,33 @@ CSV: Тематика обращений.
 
 ## Шаг 1. Архитектура решения
 
-![Архитектура](architecture.md)
+```mermaid
+graph TD
+    subgraph "Source Layer"
+        PG[(PostgreSQL: call_logs)]
+        EX[Excel: operator_kpi.xlsx]
+        CSV[CSV: call_topics.csv]
+    end
+
+    subgraph "Storage Layer"
+        PDI{Pentaho PDI - ETL}
+        MY[(MySQL: call_center_analytics)]
+        SA[Staging Area / Transformation]
+    end
+
+    subgraph "Business Layer"
+        VW[MySQL View: view_call_center_report]
+        BI[Business Analytics / KPIs]
+    end
+
+    PG --> PDI
+    EX --> PDI
+    CSV --> PDI
+    PDI --> SA
+    SA --> MY
+    MY --> VW
+    VW --> BI
+```
 
 ## Шаг 2. Создание таблицы и её заполнение в PostgreSQL:
 
