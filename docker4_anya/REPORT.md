@@ -64,12 +64,15 @@ CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0
 # См. файл k8s/fullstack.yaml
 ```
 
-### 5. Скриншоты выполнения (Шаблоны)
+### 5. Скриншоты выполнения
 
 #### Сборка образов
-![Docker Build](https://via.placeholder.com/600x400?text=Docker+Build+Process)
+<img width="1375" height="629" alt="Снимок экрана 2026-03-30 145816" src="https://github.com/user-attachments/assets/8941d4e7-44cb-4433-85bf-64594eab8978" />
+<img width="1380" height="358" alt="Снимок экрана 2026-03-30 151157" src="https://github.com/user-attachments/assets/6a368ec8-7169-4c9a-9f2b-12d843978827" />
 
 #### Статус подов
+<img width="688" height="98" alt="image" src="https://github.com/user-attachments/assets/ea52ec0d-3640-4cc7-9c62-1d944b4583e0" />
+
 ```bash
 # kubectl get pods
 NAME                               READY   STATUS    RESTARTS   AGE
@@ -79,8 +82,11 @@ frontend-deploy-xxxxxxxx-xxxxx     1/1     Running   0          4m
 ```
 
 #### Работающее приложение
-![Streamlit App](https://via.placeholder.com/800x600?text=Streamlit+Membership+Dashboard)
+<img width="1851" height="979" alt="image" src="https://github.com/user-attachments/assets/ee4873a5-402f-4a01-8634-e7957c6946ce" />
 
----
-**Выполнил:** [Ваше Имя]
-**Группа:** [Ваша Группа]
+
+База данных:
+<img width="815" height="354" alt="image" src="https://github.com/user-attachments/assets/d4493722-f88f-4cca-94a1-b6eb4710fd3a" />
+
+<img width="522" height="248" alt="image" src="https://github.com/user-attachments/assets/a9c5509a-e2b7-4538-8b30-2c527b4bbb75" />
+
