@@ -69,9 +69,37 @@
 ## 4. Бизнес-уровень (Витрина данных)
 В MySQL (на основе загруженной таблицы) создается View `view_analytics_report` (скрипт есть в `sql_scripts.sql`), которое группирует данные по категориям и показывает общие суммы остатков, поставок, а также общее отклонение и количество проблемных записей.
 
-Создание БД в MYSQL:
+БД в MYSQL:
+<img width="1553" height="800" alt="image" src="https://github.com/user-attachments/assets/2ade1610-4e90-4317-9ad8-85403a9ebfc1" />
 
 Создание VIEW:
+```sql
+CREATE OR REPLACE VIEW view_analytics_report AS
+SELECT 
+    category,
+    SUM(store_balance) AS total_store_balance,
+    SUM(warehouse_balance) AS total_warehouse_balance,
+    SUM(delivery_qty) AS total_delivered,
+    SUM(discrepancy) AS total_discrepancy,
+    COUNT(*) AS records_analyzed_count
+FROM inventory_analysis
+GROUP BY category;
+```
+<img width="1557" height="463" alt="image" src="https://github.com/user-attachments/assets/57d4cc5f-c4d7-442d-a001-e54bf614f3ac" />
+Запрос к VIEW:
+Категории с наибольшим абсолютным расхождением (discrepancy)
+```sql
+SELECT 
+    category,
+    total_discrepancy,
+    total_delivered,
+    ROUND(total_discrepancy / NULLIF(total_delivered, 0) * 100, 2) AS discrepancy_pct,
+    records_analyzed_count
+FROM view_analytics_report
+WHERE total_delivered > 0
+ORDER BY total_discrepancy DESC;
+```
+<img width="1558" height="739" alt="image" src="https://github.com/user-attachments/assets/3d18cf66-3799-4f93-9b78-ca046cc3f9ee" />
 
 ## 5. Вывод
 В ходе работы была спроектирована и реализована ETL-архитектура, объединяющая данные из трех различных источников (СУБД и файлы). Была учтена проблема большого объема данных (1 млн записей) путем введения этапа фильтрации в Pentaho, что позволило выделить наиболее приоритетные данные для аналитики и избежать лишней нагрузки на хранилище DWH. Созданы аналитические Business-витрины для пользователей продукта.
