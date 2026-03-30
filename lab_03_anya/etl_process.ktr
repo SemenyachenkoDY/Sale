@@ -98,9 +98,21 @@
   <step>
     <name>Table Input (PostgreSQL)</name>
     <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <connection>PostgreSQL_Source</connection>
     <sql>SELECT call_id, operator_id, call_date, duration_sec FROM call_logs</sql>
     <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <GUI>
       <xloc>100</xloc>
       <yloc>100</yloc>
@@ -111,9 +123,28 @@
   <step>
     <name>CSV Input (Topics)</name>
     <type>CsvInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <filename>${Internal.Entry.Current.Directory}/call_topics.csv</filename>
-    <delimiter>,</delimiter>
+    <filename_field/>
+    <rownum_field/>
+    <include_filename>N</include_filename>
+    <separator>,</separator>
+    <enclosure>&quot;</enclosure>
     <header>Y</header>
+    <buffer_size>50000</buffer_size>
+    <lazy_conversion>Y</lazy_conversion>
+    <add_filename_result>N</add_filename_result>
+    <parallel>N</parallel>
+    <newline_possible>N</newline_possible>
+    <format>mixed</format>
+    <encoding/>
     <fields>
       <field><name>call_id</name><type>Integer</type></field>
       <field><name>topic_name</name><type>String</type></field>
@@ -128,6 +159,23 @@
   <step>
     <name>Excel Input (KPI)</name>
     <type>ExcelInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield/>
+    <sheetfield/>
+    <sheetrownumfield/>
+    <rownumfield/>
+    <sheetnamefield/>
+    <fileokfield/>
     <file><name>${Internal.Entry.Current.Directory}/operator_kpi.xlsx</name></file>
     <fields>
       <field><name>operator_id</name><type>Integer</type></field>
@@ -144,8 +192,19 @@
   <step>
     <name>Stream Lookup (Topics)</name>
     <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <from>CSV Input (Topics)</from>
     <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
     <lookup>
       <key><name>call_id</name><field>call_id</field></key>
       <value><name>topic_name</name><rename>topic_name</rename></value>
@@ -160,8 +219,19 @@
   <step>
     <name>Stream Lookup (KPI)</name>
     <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <from>Excel Input (KPI)</from>
     <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
     <lookup>
       <key><name>operator_id</name><field>operator_id</field></key>
       <value><name>operator_name</name><rename>operator_name</rename></value>
@@ -177,6 +247,14 @@
   <step>
     <name>Filter Rows (Duration > 540s)</name>
     <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <condition>
       <negated>N</negated>
       <leftvalue>duration_sec</leftvalue>
@@ -194,11 +272,32 @@
   <step>
     <name>Table Output (MySQL)</name>
     <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <connection>MySQL_Target</connection>
     <table>call_center_analytics</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
     <GUI>
       <xloc>900</xloc>
       <yloc>100</yloc>
