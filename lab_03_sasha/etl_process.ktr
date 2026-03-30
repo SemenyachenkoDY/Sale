@@ -6,12 +6,9 @@
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
-    <parameters>
-    </parameters>
-    <log>
-    </log>
+    <parameters></parameters>
+    <log></log>
     <maxdate>
       <connection/>
       <table/>
@@ -30,14 +27,10 @@
     <capture_step_performance>N</capture_step_performance>
     <step_performance_capturing_delay>1000</step_performance_capturing_delay>
     <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
-    <dependencies>
-    </dependencies>
-    <partitionschemas>
-    </partitionschemas>
-    <slaveservers>
-    </slaveservers>
-    <clusterschemas>
-    </clusterschemas>
+    <dependencies></dependencies>
+    <partitionschemas></partitionschemas>
+    <slaveservers></slaveservers>
+    <clusterschemas></clusterschemas>
     <created_user>-</created_user>
     <created_date>2024/03/30 10:00:00.000</created_date>
     <modified_user>-</modified_user>
@@ -54,59 +47,17 @@ Calculation: discrepancy = (store_balance + warehouse) - deliveries</note>
       <yloc>16</yloc>
       <width>400</width>
       <heigth>58</heigth>
-      <fontname>Segoe UI</fontname>
-      <fontsize>9</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
     </notepad>
   </notepads>
 
   <order>
-    <hop>
-      <from>Table input (PostgreSQL retail_stores)</from>
-      <to>Filter Rows (store_balance &lt; 50)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Filter Rows (store_balance &lt; 50)</from>
-      <to>Stream Lookup (CSV Warehouse)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>CSV input (main_warehouse.csv)</from>
-      <to>Stream Lookup (CSV Warehouse)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Stream Lookup (CSV Warehouse)</from>
-      <to>Stream Lookup (Excel Deliveries)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Excel input (deliveries.xlsx)</from>
-      <to>Stream Lookup (Excel Deliveries)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Stream Lookup (Excel Deliveries)</from>
-      <to>Calculator (discrepancy)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Calculator (discrepancy)</from>
-      <to>Table output (MySQL inventory_analysis)</to>
-      <enabled>Y</enabled>
-    </hop>
+    <hop><from>Table input (PostgreSQL retail_stores)</from><to>Filter Rows (store_balance &lt; 50)</to><enabled>Y</enabled></hop>
+    <hop><from>Filter Rows (store_balance &lt; 50)</from><to>Stream Lookup (CSV Warehouse)</to><enabled>Y</enabled></hop>
+    <hop><from>CSV input (main_warehouse.csv)</from><to>Stream Lookup (CSV Warehouse)</to><enabled>Y</enabled></hop>
+    <hop><from>Stream Lookup (CSV Warehouse)</from><to>Stream Lookup (Excel Deliveries)</to><enabled>Y</enabled></hop>
+    <hop><from>Excel input (deliveries.xlsx)</from><to>Stream Lookup (Excel Deliveries)</to><enabled>Y</enabled></hop>
+    <hop><from>Stream Lookup (Excel Deliveries)</from><to>Calculator (discrepancy)</to><enabled>Y</enabled></hop>
+    <hop><from>Calculator (discrepancy)</from><to>Table output (MySQL inventory_analysis)</to><enabled>Y</enabled></hop>
   </order>
 
   <step>
@@ -114,158 +65,61 @@ Calculation: discrepancy = (store_balance + warehouse) - deliveries</note>
     <type>TableInput</type>
     <connection>postgres_local</connection>
     <sql>SELECT store_id, product_id, store_balance, category FROM retail_stores</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cached_row_meta_active>N</cached_row_meta_active>
-    <row_threshold>0</row_threshold>
+    <GUI><xloc>100</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Filter Rows (store_balance &lt; 50)</name>
     <type>FilterRows</type>
-    <send_true_to>Stream Lookup (CSV Warehouse)</send_true_to>
-    <send_false_to/>
     <condition>
       <leftvalue>store_balance</leftvalue>
       <function>&lt;</function>
       <rightvalue/>
-      <value>
-        <name>constant</name>
-        <type>Integer</type>
-        <text>50</text>
-        <length>-1</length>
-        <precision>-1</precision>
-        <isnull>N</isnull>
-      </value>
+      <value><name>constant</name><type>Integer</type><text>50</text><length>-1</length><precision>-1</precision><isnull>N</isnull></value>
     </condition>
+    <GUI><xloc>250</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>CSV input (main_warehouse.csv)</name>
     <type>CsvInput</type>
     <filename>${Internal.Transformation.Filename.Directory}/main_warehouse.csv</filename>
-    <filename_field/>
-    <rownum_field/>
-    <include_filename>N</include_filename>
     <separator>,</separator>
-    <enclosure>&quot;</enclosure>
     <header>Y</header>
-    <buffer_size>50000</buffer_size>
-    <lazy_conversion>Y</lazy_conversion>
-    <add_filename_result>N</add_filename_result>
-    <parallel>N</parallel>
-    <newline_possible>N</newline_possible>
-    <format>mixed</format>
-    <encoding/>
-    <fields>
-      <field>
-        <name>product_id</name>
-        <type>Integer</type>
-        <format>#</format>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>warehouse_balance</name>
-        <type>Integer</type>
-        <format>#</format>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
-  </step>
-
-  <step>
-    <name>Excel input (deliveries.xlsx)</name>
-    <type>ExcelInput</type>
-    <header>Y</header>
-    <noempty>Y</noempty>
-    <stoponempty>N</stoponempty>
-    <filefield/>
-    <sheetfield/>
-    <sheetrownum_field/>
-    <rownum_field/>
-    <sheetname_field/>
-    <file_required>N</file_required>
-    <spreadsheet_type>SAX_POI</spreadsheet_type>
-    <file>
-      <name>${Internal.Transformation.Filename.Directory}/deliveries.xlsx</name>
-      <filemask/>
-      <exclude_filemask/>
-      <file_required>N</file_required>
-      <include_subfolders>N</include_subfolders>
-    </file>
-    <fields>
-      <field>
-        <name>product_id</name>
-        <type>Integer</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>delivery_qty</name>
-        <type>Integer</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
+    <GUI><xloc>250</xloc><yloc>40</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Stream Lookup (CSV Warehouse)</name>
     <type>StreamLookup</type>
     <from>CSV input (main_warehouse.csv)</from>
-    <input_sorted>N</input_sorted>
-    <preserve_memory>Y</preserve_memory>
-    <sorted_list>N</sorted_list>
-    <integer_pair>N</integer_pair>
     <lookup>
-      <key>
-        <name>product_id</name>
-        <field>product_id</field>
-      </key>
-      <value>
-        <name>warehouse_balance</name>
-        <rename>warehouse_balance</rename>
-        <default>0</default>
-        <type>Integer</type>
-      </value>
+      <key><name>product_id</name><field>product_id</field></key>
+      <value><name>warehouse_balance</name><rename>warehouse_balance</rename><default>0</default><type>Integer</type></value>
     </lookup>
+    <GUI><xloc>400</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Excel input (deliveries.xlsx)</name>
+    <type>ExcelInput</type>
+    <file><name>${Internal.Transformation.Filename.Directory}/deliveries.xlsx</name></file>
+    <fields>
+      <field><name>product_id</name><type>Integer</type></field>
+      <field><name>delivery_qty</name><type>Integer</type></field>
+    </fields>
+    <GUI><xloc>400</xloc><yloc>40</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Stream Lookup (Excel Deliveries)</name>
     <type>StreamLookup</type>
     <from>Excel input (deliveries.xlsx)</from>
-    <input_sorted>N</input_sorted>
-    <preserve_memory>Y</preserve_memory>
-    <sorted_list>N</sorted_list>
-    <integer_pair>N</integer_pair>
     <lookup>
-      <key>
-        <name>product_id</name>
-        <field>product_id</field>
-      </key>
-      <value>
-        <name>delivery_qty</name>
-        <rename>delivery_qty</rename>
-        <default>0</default>
-        <type>Integer</type>
-      </value>
+      <key><name>product_id</name><field>product_id</field></key>
+      <value><name>delivery_qty</name><rename>delivery_qty</rename><default>0</default><type>Integer</type></value>
     </lookup>
+    <GUI><xloc>550</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
@@ -276,40 +130,23 @@ Calculation: discrepancy = (store_balance + warehouse) - deliveries</note>
       <calc_type>ADD</calc_type>
       <field_a>store_balance</field_a>
       <field_b>warehouse_balance</field_b>
-      <field_c/>
-      <value_type>Integer</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
     </calculation>
     <calculation>
       <field_name>discrepancy</field_name>
       <calc_type>SUBTRACT</calc_type>
       <field_a>total_stock</field_a>
       <field_b>delivery_qty</field_b>
-      <field_c/>
-      <value_type>Integer</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
     </calculation>
+    <GUI><xloc>700</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Table output (MySQL inventory_analysis)</name>
     <type>TableOutput</type>
     <connection>mysql_remote</connection>
-    <schema/>
     <table>inventory_analysis</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>N</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-    </fields>
+    <GUI><xloc>850</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 </transformation>
