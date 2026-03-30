@@ -108,6 +108,7 @@ spec:
 Для проверки работоспособности используются команды:
 
 - `kubectl get pods` — для подтверждения статуса **Running**.
+<img width="785" height="819" alt="image" src="https://github.com/user-attachments/assets/31577a8a-b4ef-4b0d-9172-fc6043d7b4bd" />
 
 - `kubectl get services` — для проверки корректности проброса портов.
 <img width="877" height="106" alt="image" src="https://github.com/user-attachments/assets/63f59494-e097-4a6f-a574-4c10e2426d5e" />
@@ -118,6 +119,7 @@ spec:
 
 **Интерфейс Chronograf (localhost:30888):**
 Приложение доступно в браузере. Выполнены настройки подключения к InfluxDB через внутренний DNS-адрес сервиса.
+<img width="1849" height="963" alt="image" src="https://github.com/user-attachments/assets/e94cbe26-1f35-48b1-abd7-aa865dc0ca8e" />
 
 ---
 
