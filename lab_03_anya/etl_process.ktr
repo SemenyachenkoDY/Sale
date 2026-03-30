@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>etl_call_center_integration</name>
+    <description>Integrate Call logs, KPI and Topics for Call-center variant 18</description>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
+    <directory>/</directory>
+    <parameters/>
+    <log/>
+    <maxdate/>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies/>
+    <partitionschemas/>
+    <slaveservers/>
+    <clusterschemas/>
+    <created_user>-</created_user>
+    <created_date>2026/03/30 13:20:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/03/30 13:20:00.000</modified_date>
+    <key_for_session_key/>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads/>
+  <connection>
+    <name>PostgreSQL_Source</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>st_200</database>
+    <port>5432</port>
+    <username>admin</username>
+    <password>admin1617!</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_CURSOR</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>MySQL_Target</name>
+    <server>95.131.149.21</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mgpu_ico_etl_18</database>
+    <port>3306</port>
+    <username>mgpu_ico_etl_18</username>
+    <password>jTG3yrkc</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_CURSOR</code><attribute>Y</attribute></attribute>
+    </attributes>
+  </connection>
+
+  <order>
+    <hop> <from>Table Input (PostgreSQL)</from> <to>Stream Lookup (Topics)</to> <enabled>Y</enabled> </hop>
+    <hop> <from>CSV Input (Topics)</from> <to>Stream Lookup (Topics)</to> <enabled>Y</enabled> </hop>
+    <hop> <from>Stream Lookup (Topics)</from> <to>Stream Lookup (KPI)</to> <enabled>Y</enabled> </hop>
+    <hop> <from>Excel Input (KPI)</from> <to>Stream Lookup (KPI)</to> <enabled>Y</enabled> </hop>
+    <hop> <from>Stream Lookup (KPI)</from> <to>Filter Rows (Duration > 540s)</to> <enabled>Y</enabled> </hop>
+    <hop> <from>Filter Rows (Duration > 540s)</from> <to>Table Output (MySQL)</to> <enabled>Y</enabled> </hop>
+  </order>
+
+  <step>
+    <name>Table Input (PostgreSQL)</name>
+    <type>TableInput</type>
+    <connection>PostgreSQL_Source</connection>
+    <sql>SELECT call_id, operator_id, call_date, duration_sec FROM call_logs</sql>
+    <limit>0</limit>
+  </step>
+
+  <step>
+    <name>CSV Input (Topics)</name>
+    <type>CsvInput</type>
+    <filename>${Internal.Entry.Current.Directory}/call_topics.csv</filename>
+    <delimiter>,</delimiter>
+    <header>Y</header>
+  </step>
+
+  <step>
+    <name>Excel Input (KPI)</name>
+    <type>ExcelInput</type>
+    <file><name>${Internal.Entry.Current.Directory}/operator_kpi.xlsx</name></file>
+    <fields>
+      <field><name>operator_id</name><type>Integer</type></field>
+      <field><name>operator_name</name><type>String</type></field>
+      <field><name>kpi_score</name><type>Number</type></field>
+    </fields>
+  </step>
+
+  <step>
+    <name>Stream Lookup (Topics)</name>
+    <type>StreamLookup</type>
+    <from>CSV Input (Topics)</from>
+    <input_sorted>N</input_sorted>
+    <lookup>
+      <key><name>call_id</name><field>call_id</field></key>
+      <value><name>topic_name</name><rename>topic_name</rename></value>
+    </lookup>
+  </step>
+
+  <step>
+    <name>Stream Lookup (KPI)</name>
+    <type>StreamLookup</type>
+    <from>Excel Input (KPI)</from>
+    <input_sorted>N</input_sorted>
+    <lookup>
+      <key><name>operator_id</name><field>operator_id</field></key>
+      <value><name>operator_name</name><rename>operator_name</rename></value>
+      <value><name>kpi_score</name><rename>kpi_score</rename></value>
+    </lookup>
+  </step>
+
+  <step>
+    <name>Filter Rows (Duration > 540s)</name>
+    <type>FilterRows</type>
+    <condition>
+      <negated>N</negated>
+      <leftvalue>duration_sec</leftvalue>
+      <function>&gt;</function>
+      <rightvalue/>
+      <value><name>constant</name><type>Integer</type><text>540</text></value>
+    </condition>
+  </step>
+
+  <step>
+    <name>Table Output (MySQL)</name>
+    <type>TableOutput</type>
+    <connection>MySQL_Target</connection>
+    <table/>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+  </step>
+
+</transformation>
