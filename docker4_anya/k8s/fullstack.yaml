@@ -25,6 +25,16 @@ spec:
           value: "membership_db"
         ports:
         - containerPort: 5432
+        livenessProbe:
+          exec:
+            command: ["pg_isready", "-U", "admin", "-d", "membership_db"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "admin", "-d", "membership_db"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -69,6 +79,22 @@ spec:
           value: "membership_db"
         ports:
         - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox:1.28
+        command: ['sh', '-c', "until nc -z postgres-service 5432; do echo waiting for postgres; sleep 2; done"]
 ---
 apiVersion: v1
 kind: Service
