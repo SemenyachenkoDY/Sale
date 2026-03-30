@@ -41,12 +41,15 @@ FROM generate_series(1, 1000000);
 -- Создание целевой таблицы для хранения обогащенных данных
 CREATE TABLE IF NOT EXISTS inventory_analysis (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
+    table_id INT,                
+    screen_id INT,                
     store_id INT,
-    category VARCHAR(50),
+    product_id INT,
     store_balance INT,
-    warehouse_balance INT,
+    category VARCHAR(50),
+    warehouse_base INT,           
     delivery_qty INT,
+    total_stock INT,           
     discrepancy INT
 );
 
@@ -60,10 +63,10 @@ CREATE TABLE IF NOT EXISTS inventory_analysis (
 CREATE OR REPLACE VIEW view_analytics_report AS
 SELECT 
     category,
-    SUM(store_balance) as total_store_balance,
-    SUM(warehouse_balance) as total_warehouse_balance,
-    SUM(delivery_qty) as total_delivered,
-    SUM(discrepancy) as total_discrepancy,
-    COUNT(*) as records_analyzed_count
+    SUM(store_balance) AS total_store_balance,
+    SUM(warehouse_base) AS total_warehouse_balance,
+    SUM(delivery_qty) AS total_delivered,
+    SUM(discrepancy) AS total_discrepancy,
+    COUNT(*) AS records_analyzed_count
 FROM inventory_analysis
 GROUP BY category;
