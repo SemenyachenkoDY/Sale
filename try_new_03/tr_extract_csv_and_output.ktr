@@ -13,11 +13,12 @@
     <server>localhost</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>target_db</database>
+    <database>mgpu_Ico_etl_02</database>
     <port>3306</port>
-    <username>root</username>
-    <password>Encrypted 2be98afc86aa7f2e4bb16bd64d980aac9</password>
+    <username>Mgpu_ico_etl_02</username>
+    <password>fGq5CRv6</password>
   </connection>
+
   <order>
     <hop><from>Get rows from result</from><to>Sort - Result</to><enabled>Y</enabled></hop>
     <hop><from>CSV Input - Bonuses</from><to>Sort - CSV</to><enabled>Y</enabled></hop>
