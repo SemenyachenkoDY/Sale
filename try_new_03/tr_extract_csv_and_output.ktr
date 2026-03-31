@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>tr_extract_csv_and_output</name>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters/>
+    <ps_variables/>
+    <logging/>
+  </info>
+  <connection>
+    <name>MySQL_Target</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>target_db</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted 2be98afc86aa7f2e4bb16bd64d980aac9</password>
+  </connection>
+  <order>
+    <hop><from>Get rows from result</from><to>Sort - Result</to><enabled>Y</enabled></hop>
+    <hop><from>CSV Input - Bonuses</from><to>Sort - CSV</to><enabled>Y</enabled></hop>
+    <hop><from>Sort - Result</from><to>Merge Join</to><enabled>Y</enabled></hop>
+    <hop><from>Sort - CSV</from><to>Merge Join</to><enabled>Y</enabled></hop>
+    <hop><from>Merge Join</from><to>JS - Calculations</to><enabled>Y</enabled></hop>
+    <hop><from>JS - Calculations</from><to>Table Output - Company Payments</to><enabled>Y</enabled></hop>
+    <hop><from>JS - Calculations</from><to>Table Output - Employee Taxes</to><enabled>Y</enabled></hop>
+  </order>
+
+  <step>
+    <name>Get rows from result</name>
+    <type>RowsFromResult</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <fields>
+      <field><name>emp_id</name><type>Integer</type></field>
+      <field><name>last_name</name><type>String</type></field>
+      <field><name>first_name</name><type>String</type></field>
+      <field><name>middle_name</name><type>String</type></field>
+      <field><name>grade</name><type>String</type></field>
+      <field><name>base_salary</name><type>Number</type></field>
+      <field><name>seniority_pct</name><type>Number</type></field>
+      <field><name>regional_coeff</name><type>Number</type></field>
+      <field><name>effective_date</name><type>String</type></field>
+      <field><name>currency</name><type>String</type></field>
+    </fields>
+    <GUI><xloc>100</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>CSV Input - Bonuses</name>
+    <type>CsvInput</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <filename>${Internal.Transformation.Filename.Directory}/data/bonuses_source.csv</filename>
+    <separator>;</separator>
+    <header>Y</header>
+    <fields>
+      <field><name>emp_id</name><type>Integer</type></field>
+      <field><name>bonus_amount</name><type>Number</type></field>
+    </fields>
+    <GUI><xloc>100</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort - Result</name>
+    <type>SortRows</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>250</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort - CSV</name>
+    <type>SortRows</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>250</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Merge Join</name>
+    <type>MergeJoin</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <join_type>LEFT OUTER</join_type>
+    <step1>Sort - Result</step1>
+    <step2>Sort - CSV</step2>
+    <keys_1><key>emp_id</key></keys_1>
+    <keys_2><key>emp_id</key></keys_2>
+    <GUI><xloc>400</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>JS - Calculations</name>
+    <type>ScriptValueMod</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>calc</jsScript_name><jsScript_script>
+var full_name = last_name + ' ' + first_name;
+if (middle_name) full_name += ' ' + middle_name;
+
+var bs = Number(base_salary || 0);
+var sp = Number(seniority_pct || 0);
+var rc = Number(regional_coeff || 1);
+var ba = Number(bonus_amount || 0);
+
+var adjusted_salary = bs * (1 + sp/100) * rc;
+var total_payout = adjusted_salary + ba;
+
+var tax_ndfl = Math.round(total_payout * 0.13 * 100) / 100;
+var tax_pension = Math.round(total_payout * 0.22 * 100) / 100;
+var tax_medical = Math.round(total_payout * 0.051 * 100) / 100;
+var tax_social  = Math.round(total_payout * 0.029 * 100) / 100;
+
+var total_company_cost = Math.round((total_payout + tax_pension + tax_medical + tax_social) * 100) / 100;
+</jsScript_script></jsScript></jsScripts>
+    <fields>
+      <field><name>full_name</name><rename>full_name</rename><type>String</type><length>300</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>tax_ndfl</name><rename>tax_ndfl</rename><type>Number</type><length>12</length><precision>2</precision><replace>N</replace></field>
+      <field><name>tax_pension</name><rename>tax_pension</rename><type>Number</type><length>12</length><precision>2</precision><replace>N</replace></field>
+      <field><name>total_company_cost</name><rename>total_company_cost</rename><type>Number</type><length>15</length><precision>2</precision><replace>N</replace></field>
+    </fields>
+    <GUI><xloc>550</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Table Output - Company Payments</name>
+    <type>TableOutput</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <connection>MySQL_Target</connection>
+    <table>output_company_payments</table>
+    <truncate>Y</truncate>
+    <specify_fields>Y</specify_fields>
+    <fields>
+      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
+      <field><column_name>full_name</column_name><stream_name>full_name</stream_name></field>
+      <field><column_name>total_company_cost</column_name><stream_name>total_company_cost</stream_name></field>
+    </fields>
+    <GUI><xloc>750</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Table Output - Employee Taxes</name>
+    <type>TableOutput</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <connection>MySQL_Target</connection>
+    <table>output_employee_taxes</table>
+    <truncate>Y</truncate>
+    <specify_fields>Y</specify_fields>
+    <fields>
+      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
+      <field><column_name>base_salary</column_name><stream_name>base_salary</stream_name></field>
+      <field><column_name>bonus_amount</column_name><stream_name>bonus_amount</stream_name></field>
+      <field><column_name>tax_ndfl</column_name><stream_name>tax_ndfl</stream_name></field>
+      <field><column_name>tax_pension</column_name><stream_name>tax_pension</stream_name></field>
+    </fields>
+    <GUI><xloc>750</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+</transformation>

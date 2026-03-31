@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info><name>tr_extract_excel</name><trans_type>Normal</trans_type><directory>/</directory></info>
+  <order>
+    <hop><from>Get rows from result</from><to>Sort Rows - Result</to><enabled>Y</enabled></hop>
+    <hop><from>Excel Input - Salaries</from><to>Sort Rows - Excel</to><enabled>Y</enabled></hop>
+    <hop><from>Sort Rows - Result</from><to>Merge Join</to><enabled>Y</enabled></hop>
+    <hop><from>Sort Rows - Excel</from><to>Merge Join</to><enabled>Y</enabled></hop>
+    <hop><from>Merge Join</from><to>Copy rows to result</to><enabled>Y</enabled></hop>
+  </order>
+
+  <step>
+    <name>Get rows from result</name>
+    <type>RowsFromResult</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <fields>
+      <field><name>emp_id</name><type>Integer</type></field>
+      <field><name>last_name</name><type>String</type></field>
+      <field><name>first_name</name><type>String</type></field>
+      <field><name>middle_name</name><type>String</type></field>
+    </fields>
+    <GUI><xloc>100</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Excel Input - Salaries</name>
+    <type>ExcelInput</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <spreadsheet_type>POI</spreadsheet_type>
+    <file><name>${Internal.Transformation.Filename.Directory}/data/salaries_source.xlsx</name></file>
+    <sheets><sheet><name>Оклады</name></sheet></sheets>
+    <fields>
+      <field><name>emp_id</name><type>Integer</type></field>
+      <field><name>grade</name><type>String</type></field>
+      <field><name>base_salary</name><type>Number</type></field>
+      <field><name>seniority_pct</name><type>Number</type></field>
+      <field><name>regional_coeff</name><type>Number</type></field>
+      <field><name>effective_date</name><type>String</type></field>
+      <field><name>currency</name><type>String</type></field>
+    </fields>
+    <GUI><xloc>100</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort Rows - Result</name>
+    <type>SortRows</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>250</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort Rows - Excel</name>
+    <type>SortRows</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>250</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Merge Join</name>
+    <type>MergeJoin</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <join_type>LEFT OUTER</join_type>
+    <step1>Sort Rows - Result</step1>
+    <step2>Sort Rows - Excel</step2>
+    <keys_1><key>emp_id</key></keys_1>
+    <keys_2><key>emp_id</key></keys_2>
+    <GUI><xloc>400</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Copy rows to result</name>
+    <type>RowsToResult</type>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <partitioning><type>none</type><schemaname/></partitioning>
+    <GUI><xloc>550</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+</transformation>
