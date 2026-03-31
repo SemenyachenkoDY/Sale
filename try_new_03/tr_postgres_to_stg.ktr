@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>tr_postgres_to_stg</name>
+    <description>Extract employees from PostgreSQL and load into MySQL staging</description>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <created_user>admin</created_user>
+    <created_date>2026/03/31 13:30:00.000</created_date>
+    <modified_user>admin</modified_user>
+    <modified_date>2026/03/31 13:30:00.000</modified_date>
+  </info>
+
+  <connection>
+    <name>PostgreSQL_Source</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>st_200</database>
+    <port>5432</port>
+    <username>admin</username>
+    <password>admin</password>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+    </attributes>
+  </connection>
+
+  <connection>
+    <name>MySQL_Target</name>
+    <server>95.131.149.21</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mgpu_ico_etl_XX</database>
+    <port>3306</port>
+    <username>YOUR_LOGIN</username>
+    <password>YOUR_PASSWORD</password>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.characterEncoding</code><attribute>UTF-8</attribute></attribute>
+    </attributes>
+  </connection>
+
+  <order>
+    <hop><from>Table Input - Employees</from><to>Table Output - stg_employees</to><enabled>Y</enabled></hop>
+  </order>
+
+  <step>
+    <name>Table Input - Employees</name>
+    <type>TableInput</type>
+    <connection>PostgreSQL_Source</connection>
+    <sql>SELECT
+    emp_id, last_name, first_name, middle_name, birth_date, gender,
+    department, position, hire_date, inn, snils, email, phone, is_active
+FROM employees_info
+WHERE is_active = TRUE</sql>
+    <GUI>
+      <xloc>100</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+
+  <step>
+    <name>Table Output - stg_employees</name>
+    <type>TableOutput</type>
+    <connection>MySQL_Target</connection>
+    <table>stg_employees</table>
+    <commit>10000</commit>
+    <truncate>Y</truncate>
+    <specify_fields>Y</specify_fields>
+    <fields>
+      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
+      <field><column_name>last_name</column_name><stream_name>last_name</stream_name></field>
+      <field><column_name>first_name</column_name><stream_name>first_name</stream_name></field>
+      <field><column_name>middle_name</column_name><stream_name>middle_name</stream_name></field>
+      <field><column_name>birth_date</column_name><stream_name>birth_date</stream_name></field>
+      <field><column_name>gender</column_name><stream_name>gender</stream_name></field>
+      <field><column_name>department</column_name><stream_name>department</stream_name></field>
+      <field><column_name>position</column_name><stream_name>position</stream_name></field>
+      <field><column_name>hire_date</column_name><stream_name>hire_date</stream_name></field>
+      <field><column_name>inn</column_name><stream_name>inn</stream_name></field>
+      <field><column_name>snils</column_name><stream_name>snils</stream_name></field>
+      <field><column_name>email</column_name><stream_name>email</stream_name></field>
+      <field><column_name>phone</column_name><stream_name>phone</stream_name></field>
+      <field><column_name>is_active</column_name><stream_name>is_active</stream_name></field>
+    </fields>
+    <GUI>
+      <xloc>350</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+</transformation>

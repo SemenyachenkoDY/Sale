@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>tr_join_and_calculate</name>
+    <description>Join staging tables, calculate taxes, and write to final output tables</description>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <created_user>admin</created_user>
+    <created_date>2026/03/31 13:30:00.000</created_date>
+    <modified_user>admin</modified_user>
+    <modified_date>2026/03/31 13:30:00.000</modified_date>
+  </info>
+
+  <connection>
+    <name>MySQL_Target</name>
+    <server>95.131.149.21</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mgpu_ico_etl_XX</database>
+    <port>3306</port>
+    <username>YOUR_LOGIN</username>
+    <password>YOUR_PASSWORD</password>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.characterEncoding</code><attribute>UTF-8</attribute></attribute>
+    </attributes>
+  </connection>
+
+  <order>
+    <hop><from>Table Input - stg_employees</from><to>Sort - Employees</to><enabled>Y</enabled></hop>
+    <hop><from>Table Input - stg_salaries</from><to>Sort - Salaries</to><enabled>Y</enabled></hop>
+    <hop><from>Sort - Employees</from><to>Merge - Emp + Sal</to><enabled>Y</enabled></hop>
+    <hop><from>Sort - Salaries</from><to>Merge - Emp + Sal</to><enabled>Y</enabled></hop>
+    <hop><from>Table Input - stg_bonuses</from><to>Sort - Bonuses</to><enabled>Y</enabled></hop>
+    <hop><from>Merge - Emp + Sal</from><to>Sort - Merged</to><enabled>Y</enabled></hop>
+    <hop><from>Sort - Merged</from><to>Merge - All</to><enabled>Y</enabled></hop>
+    <hop><from>Sort - Bonuses</from><to>Merge - All</to><enabled>Y</enabled></hop>
+    <hop><from>Merge - All</from><to>JS - Calculations</to><enabled>Y</enabled></hop>
+    <hop><from>JS - Calculations</from><to>Table Output - Company Payments</to><enabled>Y</enabled></hop>
+    <hop><from>JS - Calculations</from><to>Table Output - Employee Taxes</to><enabled>Y</enabled></hop>
+  </order>
+
+  <step>
+    <name>Table Input - stg_employees</name>
+    <type>TableInput</type>
+    <connection>MySQL_Target</connection>
+    <sql>SELECT emp_id, last_name, first_name, middle_name FROM stg_employees</sql>
+    <GUI><xloc>50</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Table Input - stg_salaries</name>
+    <type>TableInput</type>
+    <connection>MySQL_Target</connection>
+    <sql>SELECT emp_id, base_salary, seniority_pct, regional_coeff FROM stg_salaries</sql>
+    <GUI><xloc>50</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Table Input - stg_bonuses</name>
+    <type>TableInput</type>
+    <connection>MySQL_Target</connection>
+    <sql>SELECT emp_id, bonus_amount FROM stg_bonuses</sql>
+    <GUI><xloc>50</xloc><yloc>250</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort - Employees</name>
+    <type>SortRows</type>
+    <directory>${java.io.tmpdir}</directory>
+    <prefix>sort_emp</prefix>
+    <sort_size>1000000</sort_size>
+    <unique_rows>N</unique_rows>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>200</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort - Salaries</name>
+    <type>SortRows</type>
+    <directory>${java.io.tmpdir}</directory>
+    <prefix>sort_sal</prefix>
+    <sort_size>100000</sort_size>
+    <unique_rows>N</unique_rows>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>200</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort - Bonuses</name>
+    <type>SortRows</type>
+    <directory>${java.io.tmpdir}</directory>
+    <prefix>sort_bon</prefix>
+    <sort_size>100000</sort_size>
+    <unique_rows>N</unique_rows>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>200</xloc><yloc>250</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Merge - Emp + Sal</name>
+    <type>MergeJoin</type>
+    <join_type>LEFT OUTER</join_type>
+    <step1>Sort - Employees</step1>
+    <step2>Sort - Salaries</step2>
+    <keys_1><key>emp_id</key></keys_1>
+    <keys_2><key>emp_id</key></keys_2>
+    <GUI><xloc>350</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Sort - Merged</name>
+    <type>SortRows</type>
+    <directory>${java.io.tmpdir}</directory>
+    <prefix>sort_mrg</prefix>
+    <sort_size>1000000</sort_size>
+    <unique_rows>N</unique_rows>
+    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <GUI><xloc>450</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Merge - All</name>
+    <type>MergeJoin</type>
+    <join_type>LEFT OUTER</join_type>
+    <step1>Sort - Merged</step1>
+    <step2>Sort - Bonuses</step2>
+    <keys_1><key>emp_id</key></keys_1>
+    <keys_2><key>emp_id</key></keys_2>
+    <GUI><xloc>550</xloc><yloc>175</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>JS - Calculations</name>
+    <type>ScriptValueMod</type>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>
+var full_name = last_name + ' ' + first_name;
+if (middle_name != null &amp;&amp; middle_name != '') {
+    full_name = full_name + ' ' + middle_name;
+}
+
+var bs = (base_salary == null) ? 0 : Number(base_salary);
+var sp = (seniority_pct == null) ? 0 : Number(seniority_pct);
+var rc = (regional_coeff == null) ? 1 : Number(regional_coeff);
+var ba = (bonus_amount == null) ? 0 : Number(bonus_amount);
+
+var adjusted_salary = bs * (1 + sp / 100) * rc;
+var total_payout = adjusted_salary + ba;
+
+var tax_ndfl = Math.round(total_payout * 0.13 * 100) / 100;
+var tax_pension = Math.round(total_payout * 0.22 * 100) / 100;
+var tax_medical = Math.round(total_payout * 0.051 * 100) / 100;
+var tax_social  = Math.round(total_payout * 0.029 * 100) / 100;
+
+var total_company_cost = Math.round((total_payout + tax_pension + tax_medical + tax_social) * 100) / 100;
+        </jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field><name>full_name</name><type>String</type><replace>N</replace></field>
+      <field><name>tax_ndfl</name><type>Number</type><replace>N</replace></field>
+      <field><name>tax_pension</name><type>Number</type><replace>N</replace></field>
+      <field><name>total_company_cost</name><type>Number</type><replace>N</replace></field>
+    </fields>
+    <GUI><xloc>700</xloc><yloc>175</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Table Output - Company Payments</name>
+    <type>TableOutput</type>
+    <connection>MySQL_Target</connection>
+    <table>output_company_payments</table>
+    <commit>10000</commit>
+    <truncate>Y</truncate>
+    <specify_fields>Y</specify_fields>
+    <fields>
+      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
+      <field><column_name>full_name</column_name><stream_name>full_name</stream_name></field>
+      <field><column_name>total_company_cost</column_name><stream_name>total_company_cost</stream_name></field>
+    </fields>
+    <GUI><xloc>900</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+
+  <step>
+    <name>Table Output - Employee Taxes</name>
+    <type>TableOutput</type>
+    <connection>MySQL_Target</connection>
+    <table>output_employee_taxes</table>
+    <commit>10000</commit>
+    <truncate>Y</truncate>
+    <specify_fields>Y</specify_fields>
+    <fields>
+      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
+      <field><column_name>base_salary</column_name><stream_name>base_salary</stream_name></field>
+      <field><column_name>bonus_amount</column_name><stream_name>bonus_amount</stream_name></field>
+      <field><column_name>tax_ndfl</column_name><stream_name>tax_ndfl</stream_name></field>
+      <field><column_name>tax_pension</column_name><stream_name>tax_pension</stream_name></field>
+    </fields>
+    <GUI><xloc>900</xloc><yloc>250</yloc><draw>Y</draw></GUI>
+  </step>
+</transformation>

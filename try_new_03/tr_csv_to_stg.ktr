@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>tr_csv_to_stg</name>
+    <description>Extract bonuses from CSV and load into MySQL staging</description>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <created_user>admin</created_user>
+    <created_date>2026/03/31 13:30:00.000</created_date>
+    <modified_user>admin</modified_user>
+    <modified_date>2026/03/31 13:30:00.000</modified_date>
+  </info>
+
+  <connection>
+    <name>MySQL_Target</name>
+    <server>95.131.149.21</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mgpu_ico_etl_XX</database>
+    <port>3306</port>
+    <username>YOUR_LOGIN</username>
+    <password>YOUR_PASSWORD</password>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.characterEncoding</code><attribute>UTF-8</attribute></attribute>
+    </attributes>
+  </connection>
+
+  <order>
+    <hop><from>CSV Input - Bonuses</from><to>Table Output - stg_bonuses</to><enabled>Y</enabled></hop>
+  </order>
+
+  <step>
+    <name>CSV Input - Bonuses</name>
+    <type>CsvInput</type>
+    <filename>${Internal.Transformation.Filename.Directory}/data/bonuses_source.csv</filename>
+    <separator>;</separator>
+    <enclosure>"</enclosure>
+    <header>Y</header>
+    <buffer_size>50000</buffer_size>
+    <lazy_conversion>N</lazy_conversion>
+    <encoding>UTF-8</encoding>
+    <fields>
+      <field><name>emp_id</name><type>Integer</type></field>
+      <field><name>bonus_type</name><type>String</type></field>
+      <field><name>bonus_amount</name><type>Number</type></field>
+      <field><name>bonus_date</name><type>String</type></field>
+      <field><name>comment</name><type>String</type></field>
+    </fields>
+    <GUI>
+      <xloc>100</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+
+  <step>
+    <name>Table Output - stg_bonuses</name>
+    <type>TableOutput</type>
+    <connection>MySQL_Target</connection>
+    <table>stg_bonuses</table>
+    <commit>10000</commit>
+    <truncate>Y</truncate>
+    <specify_fields>Y</specify_fields>
+    <fields>
+      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
+      <field><column_name>bonus_type</column_name><stream_name>bonus_type</stream_name></field>
+      <field><column_name>bonus_amount</column_name><stream_name>bonus_amount</stream_name></field>
+      <field><column_name>bonus_date</column_name><stream_name>bonus_date</stream_name></field>
+      <field><column_name>comment</column_name><stream_name>comment</stream_name></field>
+    </fields>
+    <GUI>
+      <xloc>350</xloc>
+      <yloc>100</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+</transformation>
