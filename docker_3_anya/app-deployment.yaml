@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chronograf-app
+spec:
+  selector:
+    matchLabels:
+      app: chronograf
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: chronograf
+        tier: frontend
+    spec:
+      containers:
+      - name: chronograf
+        image: chronograf:latest
+        env:
+        - name: INFLUXDB_URL
+          value: http://influxdb-service:8086
+        - name: INFLUXDB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: influxdb-auth
+              key: INFLUXDB_ADMIN_USER
+        - name: INFLUXDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: influxdb-auth
+              key: INFLUXDB_ADMIN_PASSWORD
+        ports:
+        - containerPort: 8888
+          name: chronograf
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "100m"
