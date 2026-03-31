@@ -51,63 +51,143 @@
   <step>
     <name>Table Input - stg_employees</name>
     <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
     <sql>SELECT emp_id, last_name, first_name, middle_name FROM stg_employees</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <GUI><xloc>50</xloc><yloc>50</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Table Input - stg_salaries</name>
     <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
     <sql>SELECT emp_id, base_salary, seniority_pct, regional_coeff FROM stg_salaries</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <GUI><xloc>50</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Table Input - stg_bonuses</name>
     <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
     <sql>SELECT emp_id, bonus_amount FROM stg_bonuses</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <GUI><xloc>50</xloc><yloc>250</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Sort - Employees</name>
     <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <directory>${java.io.tmpdir}</directory>
     <prefix>sort_emp</prefix>
     <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
     <unique_rows>N</unique_rows>
-    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <fields><field><name>emp_id</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
     <GUI><xloc>200</xloc><yloc>50</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Sort - Salaries</name>
     <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <directory>${java.io.tmpdir}</directory>
     <prefix>sort_sal</prefix>
     <sort_size>100000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
     <unique_rows>N</unique_rows>
-    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <fields><field><name>emp_id</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
     <GUI><xloc>200</xloc><yloc>150</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Sort - Bonuses</name>
     <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <directory>${java.io.tmpdir}</directory>
     <prefix>sort_bon</prefix>
     <sort_size>100000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
     <unique_rows>N</unique_rows>
-    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <fields><field><name>emp_id</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
     <GUI><xloc>200</xloc><yloc>250</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Merge - Emp + Sal</name>
     <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <join_type>LEFT OUTER</join_type>
     <step1>Sort - Employees</step1>
     <step2>Sort - Salaries</step2>
@@ -119,17 +199,36 @@
   <step>
     <name>Sort - Merged</name>
     <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <directory>${java.io.tmpdir}</directory>
     <prefix>sort_mrg</prefix>
     <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
     <unique_rows>N</unique_rows>
-    <fields><field><name>emp_id</name><ascending>Y</ascending></field></fields>
+    <fields><field><name>emp_id</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
     <GUI><xloc>450</xloc><yloc>100</yloc><draw>Y</draw></GUI>
   </step>
 
   <step>
     <name>Merge - All</name>
     <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <join_type>LEFT OUTER</join_type>
     <step1>Sort - Merged</step1>
     <step2>Sort - Bonuses</step2>
@@ -141,6 +240,16 @@
   <step>
     <name>JS - Calculations</name>
     <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
     <jsScripts>
       <jsScript>
         <jsScript_type>0</jsScript_type>
@@ -169,22 +278,43 @@ var total_company_cost = Math.round((total_payout + tax_pension + tax_medical + 
       </jsScript>
     </jsScripts>
     <fields>
-      <field><name>full_name</name><type>String</type><replace>N</replace></field>
-      <field><name>tax_ndfl</name><type>Number</type><replace>N</replace></field>
-      <field><name>tax_pension</name><type>Number</type><replace>N</replace></field>
-      <field><name>total_company_cost</name><type>Number</type><replace>N</replace></field>
+      <field><name>full_name</name><rename>full_name</rename><type>String</type><length>300</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>tax_ndfl</name><rename>tax_ndfl</rename><type>Number</type><length>12</length><precision>2</precision><replace>N</replace></field>
+      <field><name>tax_pension</name><rename>tax_pension</rename><type>Number</type><length>12</length><precision>2</precision><replace>N</replace></field>
+      <field><name>total_company_cost</name><rename>total_company_cost</rename><type>Number</type><length>15</length><precision>2</precision><replace>N</replace></field>
     </fields>
     <GUI><xloc>700</xloc><yloc>175</yloc><draw>Y</draw></GUI>
   </step>
 
+
   <step>
     <name>Table Output - Company Payments</name>
     <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
+    <schema/>
     <table>output_company_payments</table>
     <commit>10000</commit>
     <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
     <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
     <fields>
       <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
       <field><column_name>full_name</column_name><stream_name>full_name</stream_name></field>
@@ -196,11 +326,31 @@ var total_company_cost = Math.round((total_payout + tax_pension + tax_medical + 
   <step>
     <name>Table Output - Employee Taxes</name>
     <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
+    <schema/>
     <table>output_employee_taxes</table>
     <commit>10000</commit>
     <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
     <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
     <fields>
       <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
       <field><column_name>base_salary</column_name><stream_name>base_salary</stream_name></field>
@@ -210,4 +360,5 @@ var total_company_cost = Math.round((total_payout + tax_pension + tax_medical + 
     </fields>
     <GUI><xloc>900</xloc><yloc>250</yloc><draw>Y</draw></GUI>
   </step>
+
 </transformation>
