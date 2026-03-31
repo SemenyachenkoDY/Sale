@@ -52,18 +52,59 @@
   <step>
     <name>CSV Input - Bonuses</name>
     <type>CsvInput</type>
+    <description/>
     <distribute>Y</distribute>
+    <custom_distribution/>
     <copies>1</copies>
-    <partitioning><type>none</type><schemaname/></partitioning>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <filename>${Internal.Transformation.Filename.Directory}/data/bonuses_source.csv</filename>
+    <filename_field/>
+    <rownum_field/>
+    <include_filename>N</include_filename>
     <separator>;</separator>
+    <enclosure>"</enclosure>
     <header>Y</header>
+    <buffer_size>50000</buffer_size>
+    <lazy_conversion>Y</lazy_conversion>
+    <add_filename_result>N</add_filename_result>
+    <parallel>N</parallel>
+    <newline_possible>N</newline_possible>
+    <format>mixed</format>
+    <encoding/>
     <fields>
-      <field><name>emp_id</name><type>Integer</type></field>
-      <field><name>bonus_amount</name><type>Number</type></field>
+      <field>
+        <name>emp_id</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>bonus_amount</name>
+        <type>Number</type>
+        <format>#.##</format>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
     </fields>
-    <GUI><xloc>100</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+    <GUI>
+      <xloc>100</xloc>
+      <yloc>150</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
+
 
   <step>
     <name>Sort - Result</name>
@@ -138,38 +179,107 @@ var total_company_cost = Math.round((total_payout + tax_pension + tax_medical + 
   <step>
     <name>Table Output - Company Payments</name>
     <type>TableOutput</type>
+    <description/>
     <distribute>Y</distribute>
+    <custom_distribution/>
     <copies>1</copies>
-    <partitioning><type>none</type><schemaname/></partitioning>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
+    <schema/>
     <table>output_company_payments</table>
+    <commit>1000</commit>
     <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
     <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
     <fields>
-      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
-      <field><column_name>full_name</column_name><stream_name>full_name</stream_name></field>
-      <field><column_name>total_company_cost</column_name><stream_name>total_company_cost</stream_name></field>
+      <field>
+        <column_name>emp_id</column_name>
+        <stream_name>emp_id</stream_name>
+      </field>
+      <field>
+        <column_name>full_name</column_name>
+        <stream_name>full_name</stream_name>
+      </field>
+      <field>
+        <column_name>total_company_cost</column_name>
+        <stream_name>total_company_cost</stream_name>
+      </field>
     </fields>
-    <GUI><xloc>750</xloc><yloc>50</yloc><draw>Y</draw></GUI>
+    <GUI>
+      <xloc>750</xloc>
+      <yloc>50</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
 
   <step>
     <name>Table Output - Employee Taxes</name>
     <type>TableOutput</type>
+    <description/>
     <distribute>Y</distribute>
+    <custom_distribution/>
     <copies>1</copies>
-    <partitioning><type>none</type><schemaname/></partitioning>
+    <partitioning>
+      <type>none</type>
+      <schemaname/>
+    </partitioning>
     <connection>MySQL_Target</connection>
+    <schema/>
     <table>output_employee_taxes</table>
+    <commit>1000</commit>
     <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
     <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
     <fields>
-      <field><column_name>emp_id</column_name><stream_name>emp_id</stream_name></field>
-      <field><column_name>base_salary</column_name><stream_name>base_salary</stream_name></field>
-      <field><column_name>bonus_amount</column_name><stream_name>bonus_amount</stream_name></field>
-      <field><column_name>tax_ndfl</column_name><stream_name>tax_ndfl</stream_name></field>
-      <field><column_name>tax_pension</column_name><stream_name>tax_pension</stream_name></field>
+      <field>
+        <column_name>emp_id</column_name>
+        <stream_name>emp_id</stream_name>
+      </field>
+      <field>
+        <column_name>base_salary</column_name>
+        <stream_name>base_salary</stream_name>
+      </field>
+      <field>
+        <column_name>bonus_amount</column_name>
+        <stream_name>bonus_amount</stream_name>
+      </field>
+      <field>
+        <column_name>tax_ndfl</column_name>
+        <stream_name>tax_ndfl</stream_name>
+      </field>
+      <field>
+        <column_name>tax_pension</column_name>
+        <stream_name>tax_pension</stream_name>
+      </field>
     </fields>
-    <GUI><xloc>750</xloc><yloc>150</yloc><draw>Y</draw></GUI>
+    <GUI>
+      <xloc>750</xloc>
+      <yloc>150</yloc>
+      <draw>Y</draw>
+    </GUI>
   </step>
+
 </transformation>
